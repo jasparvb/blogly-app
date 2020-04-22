@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Add a User{% endblock %}
+{% block content %}
+    <h1>Add a User</h1>
+    {% for msg in get_flashed_messages() %}
+    <p class="message alert alert-danger">{{ msg }}</p>
+    {% endfor %}
+    <form action="/users/new" method="POST">
+        <div class="input-group mb-2"><label for="convert-from">First Name</label><input type="text" name="first-name" placeholder=""></div>
+        <div class="input-group mb-2"><label for="convert-to">Last Name</label><input type="text" name="last-name" placeholder=""></div>
+        <div class="input-group mb-2"><label for="amount">Image URL</label><input type="text" name="image-url"></div>
+        <button class="btn btn-info">Add</button>
+    </form>
+{% endblock %}

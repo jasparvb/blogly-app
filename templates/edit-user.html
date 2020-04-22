@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit User{% endblock %}
+{% block content %}
+    <h1>Edit User</h1>
+    {% for msg in get_flashed_messages() %}
+    <p class="message alert alert-danger">{{ msg }}</p>
+    {% endfor %}
+    <form action="/users/{{user.id}}/edit" method="POST">
+        <div class="input-group mb-2"><label for="convert-from">First Name</label><input type="text" name="first-name" value="{{user.first_name}}"></div>
+        <div class="input-group mb-2"><label for="convert-to">Last Name</label><input type="text" name="last-name" value="{{user.last_name}}"></div>
+        <div class="input-group mb-2"><label for="amount">Image URL</label><input type="text" name="image-url" value="{{user.image_url}}"></div>
+        <a class="btn btn-warning" href="/users/{{user.id}}">Cancel</a>
+        <button class="btn btn-info">Save</button>
+    </form>
+{% endblock %}
