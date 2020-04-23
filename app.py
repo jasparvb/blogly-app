@@ -1,7 +1,7 @@
 """Blogly application."""
 
 from flask import Flask, request, redirect, render_template, flash
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 
 app = Flask(__name__)
 
@@ -16,7 +16,8 @@ app.config['SECRET_KEY'] = "SECRET!"
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
-#db.create_all()
+db.drop_all()
+db.create_all()
 
 @app.route("/")
 def home():
@@ -53,7 +54,8 @@ def add_user():
 def show_user(user_id):
     """Show info on a single user."""
     user = User.query.get_or_404(user_id)
-    return render_template("user.html", user=user)
+    posts = user.posts
+    return render_template("user.html", user=user, posts=posts)
 
 @app.route("/users/<int:user_id>/edit", methods=['GET', 'POST'])
 def edit_user(user_id):
@@ -66,10 +68,69 @@ def edit_user(user_id):
         user.last_name = request.form['last-name']
         user.image_url = request.form['image-url'] if request.form['image-url'] else None
 
-        db.session.add(user)
-        db.session.commit()
+        if first_name and last_name:
+            user = User(first_name=first_name, last_name=last_name, image_url=image_url)
+            db.session.add(user)
+            db.session.commit()
 
-        return redirect("/users")
+            return redirect("/users")
+        else:
+            flash('Name fields cannot be blank')
+            return render_template("edit-user.html")
+
+@app.route("/users/<int:user_id>/posts/new", methods=['GET', 'POST'])
+def add_post(user_id):
+    """Show add a post form and handle post submission"""
+    user = User.query.get_or_404(user_id)
+    #import pdb
+    #pdb.set_trace()
+    if request.method == 'GET':
+        return render_template("add-post.html", user=user)
+    else:
+        title = request.form['title']
+        content = request.form['content']
+
+        if title and content:
+            post = Post(title=title, content=content, user_id=user_id)
+
+            db.session.add(post)
+            db.session.commit()
+
+            return redirect(f"/users/{user_id}")
+        else:
+            flash('Title and content cannot be blank')
+            return render_template("add-post.html", user=user)
+
+@app.route("/posts/<int:post_id>/edit", methods=['GET', 'POST'])
+def edit_post(post_id):
+    """Show edit a post form and handle editing post"""
+    post = Post.query.get_or_404(post_id)
+    user = post.user
+    #import pdb
+    #pdb.set_trace()
+    if request.method == 'GET':
+        return render_template("edit-post.html", user=user, post=post)
+    else:
+        title = request.form['title']
+        content = request.form['content']
+
+        if title and content:
+            post = Post(title=title, content=content, user_id=user_id)
+
+            db.session.add(post)
+            db.session.commit()
+
+            return redirect(f"/posts/{post_id}")
+        else:
+            flash('Title and content cannot be blank')
+            return render_template("edit-post.html", user=user, post=post)
+
+@app.route("/posts/<int:post_id>")
+def show_post(post_id):
+    """Show info on a single post."""
+    post = Post.query.get_or_404(post_id)
+    user = post.user
+    return render_template("post.html", user=user, post=post)
 
 @app.route("/users/<int:user_id>/delete", methods=['POST'])
 def delete_user(user_id):
@@ -78,3 +139,13 @@ def delete_user(user_id):
     db.session.commit()
 
     return redirect("/users")
+
+@app.route("/posts/<int:post_id>/delete", methods=['POST'])
+def delete_post(post_id):
+    """Delete the post"""
+    post = Post.query.get_or_404(post_id)
+    user_id = post.user_id
+    db.session.delete(post)
+    db.session.commit()
+
+    return redirect(f"/users/{user_id}")

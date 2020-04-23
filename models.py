@@ -1,4 +1,5 @@
 """Models for Blogly."""
+import datetime
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -19,6 +20,8 @@ class User(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
 
     image_url = db.Column(db.Text, nullable=False, default='https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png')
+    
+    posts = db.relationship( 'Post', backref="user", cascade="all, delete-orphan")
 
     def __repr__(self):
         u = self
@@ -26,4 +29,28 @@ class User(db.Model):
     
     @property
     def full_name(self):
+        """Returns the full name"""
         return f"{self.first_name} {self.last_name}"
+
+class Post(db.Model):
+    __tablename__ = 'posts'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    title = db.Column(db.String(255), nullable=False)
+
+    content = db.Column(db.Text, nullable=False)
+
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def __repr__(self):
+        u = self
+        return f"<Post id={u.id} title={u.title} created-at={u.created_at}>"
+
+    @property
+    def formatted_date(self):
+        """Formats the date."""
+        return self.created_at.strftime("%A %B %d, %I:%M %p")
+    
