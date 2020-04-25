@@ -38,8 +38,7 @@ def list_users():
 def show_user(user_id):
     """Show info on a single user."""
     user = User.query.get_or_404(user_id)
-    posts = user.posts
-    return render_template("user.html", user=user, posts=posts)
+    return render_template("user.html", user=user)
 
 @app.route("/users/new", methods=['GET', 'POST'])
 def add_user():
@@ -148,7 +147,7 @@ def edit_post(post_id):
             return redirect(f"/posts/{post_id}")
         else:
             flash('Title and content cannot be blank')
-            return render_template("edit-post.html", user=user, post=post)
+            return render_template("edit-post.html", post=post, tags=tags)
 
 @app.route("/posts/<int:post_id>/delete", methods=['POST'])
 def delete_post(post_id):
@@ -220,7 +219,7 @@ def edit_tag(tag_id):
             return redirect("/tags")
         else:
             flash('Name field cannot be blank')
-            return render_template("edit-tag.html")
+            return render_template("edit-tag.html", tag=tag)
 
 @app.route("/tags/<int:tag_id>/delete", methods=['POST'])
 def delete_tag(tag_id):
