@@ -4,9 +4,17 @@
 {% block content %}
     <h1>{{ post.title }}</h1>
     <p>{{ post.content }}</p>
-    <p><i>By {{ user.full_name }} on {{ post.formatted_date }}</i></p>
+    <p><i>By {{ post.user.full_name }} on {{ post.formatted_date }}</i></p>
+    {% if post.tags %}
+    <p>
+        <b>Tags:</b>
+        {% for tag in post.tags %}
+        <span class="badge badge-primary">{{ tag.name }}</span>
+        {% endfor %}
+    </p>
+    {% endif %}
     <form action="/posts/{{ post.id }}/delete" method="POST">
-        <a class="btn btn-primary" href="/users/{{ user.id }}">Cancel</a>
+        <a class="btn btn-primary" href="/users/{{ post.user.id }}">Cancel</a>
         <a class="btn btn-warning" href="/posts/{{ post.id }}/edit">Edit</a>
         <button  class="btn btn-danger">Delete</button>
     </form>

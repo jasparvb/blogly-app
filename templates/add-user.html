@@ -7,9 +7,10 @@
     <p class="message alert alert-danger">{{ msg }}</p>
     {% endfor %}
     <form action="/users/new" method="POST">
-        <div class="input-group mb-2"><label for="convert-from">First Name</label><input type="text" name="first-name" placeholder=""></div>
-        <div class="input-group mb-2"><label for="convert-to">Last Name</label><input type="text" name="last-name" placeholder=""></div>
-        <div class="input-group mb-2"><label for="amount">Image URL</label><input type="text" name="image-url"></div>
+        <div class="input-group mb-2"><label for="first-name">First Name</label><input type="text" name="first-name" placeholder=""></div>
+        <div class="input-group mb-2"><label for="last-name">Last Name</label><input type="text" name="last-name" placeholder=""></div>
+        <div class="input-group mb-2"><label for="image-url">Image URL</label><input type="text" name="image-url"></div>
+        <a class="btn btn-danger" href="/users">Cancel</a>
         <button class="btn btn-info">Add</button>
     </form>
 {% endblock %}
