@@ -45,7 +45,7 @@ class Post(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    tags = db.relationship( 'Tag', secondary='post_tags', backref='posts')
+    tags = db.relationship( 'Tag', secondary='post_tags', cascade="all, delete", backref='posts')
 
     def __repr__(self):
         u = self
