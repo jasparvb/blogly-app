@@ -21,7 +21,7 @@ class User(db.Model):
 
     image_url = db.Column(db.Text, nullable=False, default='https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png')
     
-    posts = db.relationship( 'Post', backref="user", cascade="all, delete-orphan")
+    posts = db.relationship( 'Post', backref="user", cascade="delete")
 
     def __repr__(self):
         u = self
@@ -45,7 +45,7 @@ class Post(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    tags = db.relationship( 'Tag', secondary='post_tags', cascade="all, delete", backref='posts')
+    tags = db.relationship( 'Tag', secondary='post_tags', cascade="delete", backref='posts')
 
     def __repr__(self):
         u = self
