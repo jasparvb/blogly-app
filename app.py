@@ -72,7 +72,6 @@ def edit_user(user_id):
         user.image_url = request.form['image-url'] if request.form['image-url'] else None
 
         if user.first_name and user.last_name:
-            #user = User(first_name=first_name, last_name=last_name, image_url=image_url)
             db.session.add(user)
             db.session.commit()
 
